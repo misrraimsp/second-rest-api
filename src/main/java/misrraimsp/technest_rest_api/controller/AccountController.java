@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import misrraimsp.technest_rest_api.model.Account;
 import misrraimsp.technest_rest_api.service.AccountServer;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -17,5 +18,10 @@ public class AccountController {
     @GetMapping("/accounts")
     public List<Account> allAccounts() {
         return accountServer.findAll();
+    }
+
+    @GetMapping("/accounts/{accountId}")
+    public Account oneAccount(@PathVariable Long accountId) {
+        return accountServer.findById(accountId);
     }
 }
