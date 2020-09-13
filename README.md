@@ -10,3 +10,4 @@ Comentarios:
 - las transferencia son realizadas en post(/transfers), pasando como argumento un 'Transfer' en json
 - Se ha usado la anotación @Transactional para garantizar que las transferencias se realizan de forma transaccional
 - La propagación de la transacción se ha fijado a 'nested', por considerarla la más apropiada ([fuente](https://thorben-janssen.com/transactions-spring-data-jpa/))
+- cuando se intenta una transacción no permitida o cuando se pretende utilizar una cuenta que no existe, el sistema devuelve un mensaje de error en formato json
