@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -72,21 +73,31 @@ class AccountControllerTest {
 
     @Test
     public void allAccounts_whenValidMethodAndUrlAndPathVariable_thenReturns200() throws Exception {
-
+        // given
+        // ...
+        // when
         mockMvc.perform(get("/accounts"))
+        // then
                 .andExpect(status().isOk());
     }
 
     @Test
     public void allAccounts_whenValidInput_thenCallsAccountServerFindAll() throws Exception {
+        // given
+        // ...
+        // when
         mockMvc.perform(get("/accounts"));
+        // then
         verify(accountServer, times(1)).findAll();
     }
 
     @Test
     public void oneAccount_whenValidMethodAndUrlAndPathVariable_thenReturns200() throws Exception {
+        // given
         Long accountId = 1L;
+        // when
         mockMvc.perform(get("/accounts/{accountId}",accountId))
+        // then
                 .andExpect(status().isOk());
     }
 
@@ -113,7 +124,7 @@ class AccountControllerTest {
         // when
         ResultActions resultActions = mockMvc.perform(get("/accounts/{accountId}", accountId));
         // then
-        resultActions.andExpect(jsonPath("id").value(accountEntityModel.getContent().getId()));
+        resultActions.andExpect(jsonPath("id").value(Objects.requireNonNull(accountEntityModel.getContent()).getId()));
         resultActions.andExpect(jsonPath("name").value(accountEntityModel.getContent().getName()));
         resultActions.andExpect(jsonPath("currency").value(accountEntityModel.getContent().getCurrency().toString()));
         resultActions.andExpect(jsonPath("balance").value(accountEntityModel.getContent().getBalance()));
@@ -180,7 +191,55 @@ class AccountControllerTest {
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(account)));
         // then
-        resultActions.andExpect(jsonPath("id").value(accountEntityModel.getContent().getId()));
+        resultActions.andExpect(jsonPath("id").value(Objects.requireNonNull(accountEntityModel.getContent()).getId()));
+        resultActions.andExpect(jsonPath("name").value(accountEntityModel.getContent().getName()));
+        resultActions.andExpect(jsonPath("currency").value(accountEntityModel.getContent().getCurrency().toString()));
+        resultActions.andExpect(jsonPath("balance").value(accountEntityModel.getContent().getBalance()));
+        resultActions.andExpect(jsonPath("treasury").value(accountEntityModel.getContent().isTreasury()));
+        resultActions.andExpect(jsonPath("_links.self.href").value(accountEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri().toString()));
+        resultActions.andExpect(jsonPath("_links.accounts.href").value(accountEntityModel.getRequiredLink("accounts").toUri().toString()));
+    }
+
+    @Test
+    public void editAccount_whenValidMethodAndUrlAndRequestBody_thenReturns201() throws Exception {
+        // given
+        Long accountId = 1L;
+        setAccount(accountId,"testAccount",Currency.getInstance("EUR"),BigDecimal.ONE,false);
+        setAccountEntityModel();
+        given(accountServer.editById(accountId, account)).willReturn(account);
+        given(accountModelAssembler.toModel(account)).willReturn(accountEntityModel);
+        // when
+        ResultActions resultActions = mockMvc.perform(put("/accounts/{accountId}", accountId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(account)));
+        // then
+        resultActions.andExpect(status().isCreated());
+    }
+
+    @Test
+    public void editAccount_whenInvalidRequestBody_thenReturns400() throws Exception {
+        // given
+        Long accountId = 1L;
+        // when
+        ResultActions resultActions = mockMvc.perform(put("/accounts/{accountId}", accountId));
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void editAccount_whenValidInput_thenReturnsTheEditedAccount() throws Exception {
+        // given
+        Long accountId = 1L;
+        setAccount(accountId,"testAccount",Currency.getInstance("EUR"),BigDecimal.ONE,false);
+        setAccountEntityModel();
+        given(accountServer.editById(accountId, account)).willReturn(account);
+        given(accountModelAssembler.toModel(account)).willReturn(accountEntityModel);
+        // when
+        ResultActions resultActions = mockMvc.perform(put("/accounts/{accountId}", accountId)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(account)));
+        // then
+        resultActions.andExpect(jsonPath("id").value(Objects.requireNonNull(accountEntityModel.getContent()).getId()));
         resultActions.andExpect(jsonPath("name").value(accountEntityModel.getContent().getName()));
         resultActions.andExpect(jsonPath("currency").value(accountEntityModel.getContent().getCurrency().toString()));
         resultActions.andExpect(jsonPath("balance").value(accountEntityModel.getContent().getBalance()));
