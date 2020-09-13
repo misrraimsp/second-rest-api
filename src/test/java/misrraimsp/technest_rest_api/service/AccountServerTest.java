@@ -28,7 +28,7 @@ class AccountServerTest {
     @Mock
     private AccountRepository accountRepository;
 
-    private static Account account;
+    private Account account;
 
     @BeforeEach
     public void initializeData(){
@@ -92,6 +92,42 @@ class AccountServerTest {
         List<Account> actualAccounts = accountServer.findAll();
         // then
         assertThat(actualAccounts).isEqualTo(accounts);
+    }
+
+    @Test
+    public void editById_whenCalledWithoutTreasuryData_editTheAccountAndReturnsIt() {
+        // given
+        Long accountId = 1L;
+        setAccount(accountId,"testEditAccount",Currency.getInstance("USD"),BigDecimal.ZERO,false);
+        Account accountData = new Account();
+        accountData.setName("editedNameForTestAccount");
+        accountData.setCurrency(Currency.getInstance("EUR"));
+        accountData.setBalance(BigDecimal.ONE);
+        given(accountRepository.findById(accountId)).willReturn(Optional.of(account));
+        given(accountRepository.save(account)).willReturn(account);
+        // when
+        Account actualAccount = accountServer.editById(accountId, accountData);
+        // then
+        assertThat(actualAccount.getCurrency()).isEqualTo(accountData.getCurrency());
+        assertThat(actualAccount.getBalance()).isEqualTo(accountData.getBalance());
+        assertThat(actualAccount.getName()).isEqualTo(accountData.getName());
+        assertThat(actualAccount.isTreasury()).isEqualTo(false);
+        assertThat(actualAccount.getId()).isEqualTo(accountId);
+    }
+
+    @Test
+    public void editById_whenCalledWithTreasuryData_doNotEditTreasury() {
+        // given
+        Long accountId = 1L;
+        setAccount(accountId,null,null,null,false);
+        Account accountData = new Account();
+        accountData.setTreasury(true);
+        given(accountRepository.findById(accountId)).willReturn(Optional.of(account));
+        given(accountRepository.save(account)).willReturn(account);
+        // when
+        Account actualAccount = accountServer.editById(accountId, accountData);
+        // then
+        assertThat(actualAccount.isTreasury()).isEqualTo(false);
     }
 
 }

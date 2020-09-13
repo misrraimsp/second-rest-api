@@ -26,4 +26,12 @@ public class AccountServer {
     public Account save(Account account) {
         return accountRepository.save(account);
     }
+
+    public Account editById(Long accountId, Account accountData) { // do not modify treasury field
+        Account editedAccount = this.findById(accountId);
+        if (accountData.getBalance() != null) editedAccount.setBalance(accountData.getBalance());
+        if (accountData.getCurrency() != null) editedAccount.setCurrency(accountData.getCurrency());
+        if (accountData.getName() != null) editedAccount.setName(accountData.getName());
+        return accountRepository.save(editedAccount);
+    }
 }

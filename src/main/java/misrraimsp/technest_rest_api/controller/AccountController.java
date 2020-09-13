@@ -47,4 +47,13 @@ public class AccountController {
                 .created(accountEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //location header
                 .body(accountEntityModel);
     }
+
+    @PutMapping("/accounts/{accountId}")
+    ResponseEntity<?> editAccount(@RequestBody Account accountData, @PathVariable Long accountId) {
+        Account editedAccount = accountServer.editById(accountId, accountData);
+        EntityModel<Account> accountEntityModel = accountModelAssembler.toModel(editedAccount);
+        return ResponseEntity
+                .created(accountEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(accountEntityModel);
+    }
 }
