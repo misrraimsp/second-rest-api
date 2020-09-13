@@ -11,3 +11,5 @@ Comentarios:
 - Se ha usado la anotación @Transactional para garantizar que las transferencias se realizan de forma transaccional
 - La propagación de la transacción se ha fijado a 'nested', por considerarla la más apropiada ([fuente](https://thorben-janssen.com/transactions-spring-data-jpa/))
 - cuando se intenta una transacción no permitida o cuando se pretende utilizar una cuenta que no existe, el sistema devuelve un mensaje de error en formato json
+- en ppio no se ha visto necesidad de testar la capa de persistencia ya que no se han añadido nuevas queries a las heredadas desde JpaRepository
+- Sería interesante tener en cuenta la moneda a la hora de hacer las transacciones. Por ejemplo se podría crear un servicio que proporcionara la tasa de cambio. En el presente ejercicio, por simplicidad y al no estar explícitamente indicado en los requisitos se ha obviado esta cuestión.
