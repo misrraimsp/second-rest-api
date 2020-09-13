@@ -42,7 +42,7 @@ class AccountControllerTest {
 
     @Test
     public void allAccounts_whenValidMethodAndUrlAndPathVariable_thenReturns200() throws Exception {
-        
+
         mockMvc.perform(get("/accounts"))
                 .andExpect(status().isOk());
     }

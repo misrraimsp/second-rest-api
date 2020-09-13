@@ -6,9 +6,9 @@ import misrraimsp.technest_rest_api.service.AccountServer;
 import misrraimsp.technest_rest_api.util.AccountModelAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,5 +38,13 @@ public class AccountController {
     @GetMapping("/accounts/{accountId}")
     public EntityModel<Account> oneAccount(@PathVariable Long accountId) {
         return accountModelAssembler.toModel(accountServer.findById(accountId));
+    }
+
+    @PostMapping("/accounts")
+    ResponseEntity<?> newAccount(@RequestBody Account account) {
+        EntityModel<Account> accountEntityModel = accountModelAssembler.toModel(accountServer.save(account));
+        return ResponseEntity
+                .created(accountEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //location header
+                .body(accountEntityModel);
     }
 }

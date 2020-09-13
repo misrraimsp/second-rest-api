@@ -22,4 +22,8 @@ public class AccountServer {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new EntityNotFoundByIdException(accountId, Account.class.getSimpleName()));
     }
+
+    public Account save(Account account) {
+        return accountRepository.save(account);
+    }
 }
