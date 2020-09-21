@@ -3,7 +3,7 @@
 ## Table of contents
 * [General Info](#general-info)
 * [Technologies](#technologies)
-* [Comments](#comments)
+* [Implementation notes](#implementation-notes)
 * [Copyright](#copyright)
 * [References](#references)
 
@@ -25,7 +25,7 @@ Project is created with:
 * Mockito
 * Git
 
-## Comments:
+## Implementation notes:
 - Inputs will not be validated (for example with @Valid). The requirements do not ask for it, and I am short on time. It would be interesting to add it at some future point.
 - 4 accounts functionalities have been implemented:
   - see all accounts at *get(/accounts)*
