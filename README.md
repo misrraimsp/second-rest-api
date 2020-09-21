@@ -16,6 +16,7 @@ For more info:
 ## Technologies
 Project is created with:
 * Java
+* IntelliJ IDEA
 * Spring Boot
 * Spring Web MVC
 * Spring Data JPA
