@@ -47,7 +47,7 @@ Project is created with:
 - **project name**: secondrest
 - **author**: MISRRAIM SUÁREZ PÉREZ
 - **mail**: misrraimsp@gmail.com
-- **last version**: 14/09/2020
+- **last version**: 13/09/2020
 
 ## References
 - [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
